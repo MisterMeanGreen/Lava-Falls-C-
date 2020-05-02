@@ -1,6 +1,7 @@
 #ifndef DELTA_R_ENGINE_H
 #define DELTA_R_ENGINE_H
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <string>
 class dr_object { //basic object, hold position, rect, and image
 		//Naming Behavior
@@ -63,4 +64,19 @@ public:
 		void SDL_RenderCopy_DEBUG(SDL_Renderer* renderer, SDL_Rect* src);
 
 	};
+class dr_sdl_text {
+	SDL_Texture* tex;
+	SDL_Texture* Text_To_Texture(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color color) {
+		SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+		SDL_FreeSurface(surface);
+		return texture;
+	}
+	
+public:
+	dr_sdl_text(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color color);
+	~dr_sdl_text();
+	SDL_Texture* operator()();
+	SDL_Texture* operator()(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color color);
+};
 #endif

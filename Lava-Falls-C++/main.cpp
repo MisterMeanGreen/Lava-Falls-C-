@@ -1,12 +1,13 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "delta_r_engine.h"
 #include <random>
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <cmath>
-
+#include <chrono>
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
 const float PERSON_RADIUS = 10.f;
@@ -105,6 +106,9 @@ int main(int argc, char* argv[])
 		logSDLError(std::cout, "SDL_Init");
 		return 1;
 	}
+	TTF_Init();
+	TTF_Font* font = TTF_OpenFont("res/arial.ttf", 25);
+	
 	SDL_Window* main_win = SDL_CreateWindow("Dot Test", 100, 100, SCREEN_WIDTH,SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (main_win == nullptr) {
 		logSDLError(std::cout, "CreateWindow");
@@ -124,6 +128,7 @@ int main(int argc, char* argv[])
 	if (t.get_img() == nullptr)
 		return 1;
 	for (bool quit = false; !quit;) {
+		
 		//e is an SDL_Event variable we've declared before entering the main loop
 		for (SDL_Event e; SDL_PollEvent(&e);) {
 			//If user closes the window
@@ -134,12 +139,16 @@ int main(int argc, char* argv[])
 		}
 		SDL_RenderClear(main_ren);
 		t.SDL_RenderCopy_DEBUG(main_ren);
+		dr_sdl_text tex(main_ren, "Testing", font, { 255,255,255 });
+		SDL_RenderCopy(main_ren, tex(),nullptr,nullptr);
 		SDL_SetRenderDrawColor(main_ren, 0, 255, 0, 255);
 		SDL_RenderPresent(main_ren);
 		t.set_x(t.get_x() + 1);
 	}
 	SDL_DestroyRenderer(main_ren);
 	SDL_DestroyWindow(main_win);
+	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 	return 0;
 }

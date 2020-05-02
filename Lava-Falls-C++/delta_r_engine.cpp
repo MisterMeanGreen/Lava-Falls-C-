@@ -189,4 +189,22 @@ void dr_object::SDL_RenderCopy_DEBUG(SDL_Renderer* renderer, SDL_Rect* src)
 }
 
 
+dr_sdl_text::dr_sdl_text(SDL_Renderer* renderer, std::string text, TTF_Font* font, SDL_Color color) {
+	tex = Text_To_Texture(renderer, text, font, color);
+}
 
+dr_sdl_text::~dr_sdl_text()
+{
+	SDL_DestroyTexture(tex);
+}
+
+SDL_Texture* dr_sdl_text::operator()()
+{
+	return tex;
+}
+
+SDL_Texture* dr_sdl_text::operator()(SDL_Renderer* renderer,std::string text,TTF_Font* font, SDL_Color color)
+{
+	SDL_DestroyTexture(tex);
+	return 	tex = Text_To_Texture(renderer, text, font, color);
+}
